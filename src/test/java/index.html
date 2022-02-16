@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Bootstrap Example</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <a href="index.html">Home</a>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+        Create
+    </button>
+    <h2>Danh Sách Thành Phố</h2>
+    <div class="modal" id="myModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Modal Heading</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="container">
+                        <h2>Stacked form</h2>
+                        <div class="form-group">
+                            <label >Name City:</label>
+                            <input type="email" class="form-control" id="name" placeholder="Enter Name" name="email">
+                        </div>
+                        <div class="form-group">
+                            <label >Acreage:</label>
+                            <input type="text" class="form-control" id="acreage" placeholder="Diện Tích" name="email">
+                        </div>
+
+                        <div class="form-group">
+                            <label >Population:</label>
+                            <input type="text" class="form-control" id="population" placeholder="Dân số" name="email">
+                        </div>
+                        <div class="form-group">
+                            <label >Gdp:</label>
+                            <input type="text" class="form-control" id="gdp" placeholder="Gdp" name="pswd">
+                        </div>
+                        <div class="form-group">
+                            <label >Description:</label>
+                            <input type="text" class="form-control" id="description" placeholder="Description" name="pswd">
+                        </div>
+
+                        <div class="form-group">
+                            <label >Country:</label>
+                            <select name="" id="country">
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary" id="btn" onclick="create()">Submit</button>
+                    </div>
+                </div>
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="edit">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Modal Heading</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="container">
+                        <h2>Stacked form</h2>
+                        <div class="form-group">
+                            <label >Name City:</label>
+                            <input type="email" class="form-control" id="nameEdit" placeholder="Enter Name" name="email">
+                        </div>
+                        <div class="form-group" hidden>
+                            <label >Id</label>
+                            <input type="email" class="form-control" id="idEdit" placeholder="Enter Name" name="email">
+                        </div>
+                        <div class="form-group">
+                            <label >Acreage:</label>
+                            <input type="text" class="form-control" id="acreageEdit" placeholder="Diện Tích" name="email">
+                        </div>
+
+                        <div class="form-group">
+                            <label >Population:</label>
+                            <input type="text" class="form-control" id="populationEdit" placeholder="Dân số" name="email">
+                        </div>
+                        <div class="form-group">
+                            <label >Gdp:</label>
+                            <input type="text" class="form-control" id="gdpEdit" placeholder="Gdp" name="pswd">
+                        </div>
+                        <div class="form-group">
+                            <label >Description:</label>
+                            <input type="text" class="form-control" id="descriptionEdit" placeholder="Description" name="pswd">
+                        </div>
+
+                        <div class="form-group">
+                            <label >Country:</label>
+                            <select name="" id="countryEdit">
+
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary" onclick="editCity()">Edit</button>
+                    </div>
+                </div>
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>STT</th>
+            <th>Name City</th>
+            <th>Country</th>
+            <th>GDP</th>
+            <th>Population</th>
+            <th>Acreage</th>
+            <th>Description</th>
+            <th colspan="2">Action</th>
+
+
+        </tr>
+        </thead>
+        <tbody id="tbody">
+
+        </tbody>
+
+    </table>
+</div>
+</body>
+</html>
+<script>
+    function showCity(){
+        $.ajax({
+            type : "GET",
+            url : "http://localhost:8080/home/city" ,
+            success : function (data){
+                let str = ""
+                for (let i = 0; i < data.length; i++) {
+                    let stt = i
+
+                    str += `<tr>`
+                    str += `<td>${stt+1}</td>`
+                    str += `<td><a href="" data-toggle="modal" data-target="#edit" onclick="showFormEdit(${data[i].id})">${data[i].name}</td>`
+                    str += `<td>${data[i].country.name}</td>`
+                    str += `<td>${data[i].gdp}</td>`
+                    str += `<td>${data[i].population}</td>`
+                    str += `<td>${data[i].acreage}</td>`
+                    str += `<td>${data[i].description}</td>`
+                    str += `<td><button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#edit" onclick="showFormEdit(${data[i].id})" >Edit</a></td>`
+                    str += `<td><button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#delete" onclick="deleteCity(${data[i].id})" >Delete</a></td>`
+                    str += `</tr>`
+
+                }
+                document.getElementById("tbody").innerHTML = str
+
+            }
+
+        })
+    }
+    showCity()
+
+    function showCountry(){
+        $.ajax({
+            type : "GET",
+            url : "http://localhost:8080/home/country" ,
+            success : function (data){
+                let str = ""
+                for (let i = 0; i < data.length; i++) {
+                    str+= `<option value="${data[i].id}">${data[i].name}</option>`
+
+                }
+                document.getElementById("country").innerHTML = str
+                document.getElementById("countryEdit").innerHTML = str
+
+            }
+
+        })
+    }
+    showCountry()
+
+
+
+    function deleteCity(id){
+        $.ajax({
+            type : "DELETE",
+            url : "http://localhost:8080/home/" + id,
+            success : function (){
+                confirm("sure?")
+                window.location.href = "index.html"
+
+            },
+            error : function (err){
+                console.log(err)
+            }
+        })
+    }
+
+    function create(){
+        let name = document.getElementById("name").value;
+        let acreage = document.getElementById("acreage").value;
+        let population = document.getElementById("population").value;
+        let gdp = document.getElementById("gdp").value;
+        let description = document.getElementById("description").value;
+        let country = document.getElementById("country").value;
+
+        let city = {
+            name : name,
+            acreage : acreage,
+            population : population,
+            gdp : gdp,
+            description : description,
+            country : {id:country }
+        }
+
+        $.ajax({
+            type : "POST",
+            url : "http://localhost:8080/home",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            data : JSON.stringify(city),
+            success : function (){
+                window.location.href = "index.html"
+
+            },
+            error : function (err){
+                console.log(err)
+            }
+        })
+    }
+
+    function showFormEdit(id){
+        $.ajax({
+            type : "GET",
+            url : "http://localhost:8080/home/" + id,
+            success: function (data){
+                document.getElementById("nameEdit").value = data.name;
+                document.getElementById("idEdit").value = data.id;
+                document.getElementById("acreageEdit").value = data.acreage;
+                document.getElementById("populationEdit").value = data.population;
+                document.getElementById("gdpEdit").value = data.gdp;
+                document.getElementById("descriptionEdit").value = data.description;
+                document.getElementById("countryEdit").value = data.country.id;
+
+            },
+            error : function (err){
+                console.log(err)
+            }
+        })
+    }
+
+    function showFormDetail(id){
+        $.ajax({
+            type : "GET",
+            url : "http://localhost:8080/home/" + id,
+            success: function (data){
+                document.getElementById("nameDetail").value = data.name;
+                document.getElementById("idEdit").value = data.id;
+                document.getElementById("acreageEdit").value = data.acreage;
+                document.getElementById("populationEdit").value = data.population;
+                document.getElementById("gdpEdit").value = data.gdp;
+                document.getElementById("descriptionEdit").value = data.description;
+                document.getElementById("countryEdit").value = data.country.id;
+
+            },
+            error : function (err){
+                console.log(err)
+            }
+        })
+    }
+
+    function editCity(){
+        let id = document.getElementById("idEdit").value;
+        let name = document.getElementById("nameEdit").value;
+        let acreage = document.getElementById("acreageEdit").value;
+        let population = document.getElementById("populationEdit").value;
+        let gdp = document.getElementById("gdpEdit").value;
+        let description = document.getElementById("descriptionEdit").value;
+        let country = document.getElementById("countryEdit").value;
+        let city = {
+            id : id,
+            name : name,
+            acreage : acreage,
+            population : population,
+            gdp : gdp,
+            description : description,
+            country : {id:country }
+
+        }
+        $.ajax({
+            type : "PUT",
+            url : "http://localhost:8080/home",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            data : JSON.stringify(city),
+            success : function (){
+                window.location.href = "index.html"
+            },
+            error : function (err){
+                console.log(err)
+            }
+        })
+    }
+
+
+</script>
